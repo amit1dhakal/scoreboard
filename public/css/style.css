@@ -1,0 +1,449 @@
+:root {
+    --primary-color: rgb(8, 72, 83);
+    --background-color: #012b25;
+    --white-color: white;
+    --black-color: black;
+    --text-color: #333;
+}
+html {
+    font-size: 100%;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    color: rgb(137, 230, 165) !important;
+}
+.text-right {
+    text-align: right;
+}
+
+.super-section {
+    width: 100%;
+    min-height: 3rem;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+}
+
+
+
+
+nav {
+    font-size: 1rem;
+    background-color: gray;
+}
+.nav-link {
+    position: relative;
+    color: var(--white-color);
+}
+
+.fa-brands,
+.super-first a {
+    color: white;
+}
+.fa-brands:hover,
+.super-first a:hover {
+    color: rgb(137, 230, 165) !important;
+}
+main {
+    margin-block: 20px;
+}
+
+.loginpage{
+  margin-block: auto;
+}
+.loginheader{
+  text-align: center;
+  font-weight: 600;
+}
+
+.paginate_button {
+    background-color: #0b5ed7;
+    color: var(--white-color);
+    margin: 3px;
+    padding: 5px;
+    cursor: pointer;
+
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+}
+label {
+    margin-top:10px;
+}
+
+.active{
+    color: rgb(137, 230, 165) !important;
+}
+
+.live-watch{
+    animation: liveanimation 1s ease infinite;
+    -webkit-animation: liveanimation 1s ease infinite;
+}
+@keyframes liveanimation {
+    0% {
+        background-color: green;
+    }
+    50% {
+        background-color: red;
+    }
+    100% {
+        background-color: blue;
+    }
+}
+
+.footer {
+    background-color: var(--background-color);
+    color: var(--white-color);
+    text-align: center;
+    padding-block: 0.4rem;
+    width: 100%;
+    margin-top: auto;
+}
+
+
+
+.ui-pnotify {
+    top: 1.25rem;
+    right: 1.25rem;
+    position: absolute;
+    height: auto;
+    z-index: 2;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+body > .ui-pnotify {
+    position: fixed;
+    z-index: 1070;
+}
+.ui-pnotify.alert-rounded > .ui-pnotify-container {
+    border-radius: 50rem;
+}
+.ui-pnotify[class*="bg-"] > .ui-pnotify-container {
+    background-color: inherit;
+    border-color: transparent;
+    color: #fff;
+}
+.ui-pnotify.alert-styled-custom > .ui-pnotify-container,
+.ui-pnotify[class$="-100"] > .ui-pnotify-container,
+.ui-pnotify[class*="text-"] > .ui-pnotify-container {
+    background-color: inherit;
+    border-color: inherit;
+    color: inherit;
+}
+.ui-pnotify.stack-bottom-left,
+.ui-pnotify.stack-top-left {
+    left: 1.25rem;
+    right: auto;
+}
+.ui-pnotify.stack-bottom-left,
+.ui-pnotify.stack-bottom-right {
+    bottom: 1.25rem;
+    top: auto;
+}
+.ui-pnotify.stack-modal {
+    left: 50%;
+    right: auto;
+    margin-left: -10rem;
+}
+.ui-pnotify.stack-custom-right {
+    top: auto;
+    left: auto;
+    bottom: 25%;
+    right: 25%;
+}
+.ui-pnotify.stack-custom-left {
+    top: 25%;
+    left: 25%;
+    right: auto;
+    bottom: auto;
+}
+.ui-pnotify.stack-custom-top {
+    right: 0;
+    left: 0;
+    top: 0;
+}
+.ui-pnotify.stack-custom-bottom {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: auto;
+}
+.ui-pnotify.ui-pnotify-in {
+    display: block !important;
+}
+.ui-pnotify.ui-pnotify-move {
+    transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, bottom 0.5s ease;
+}
+.ui-pnotify.ui-pnotify-fade-slow {
+    opacity: 0;
+    transition: opacity linear 0.6s;
+}
+.ui-pnotify.ui-pnotify-fade-slow.ui-pnotify.ui-pnotify-move {
+    transition: opacity 0.6s linear, left 0.5s ease, top 0.5s ease,
+        right 0.5s ease, bottom 0.5s ease;
+}
+.ui-pnotify.ui-pnotify-fade-normal {
+    opacity: 0;
+    transition: opacity linear 0.4s;
+}
+.ui-pnotify.ui-pnotify-fade-normal.ui-pnotify.ui-pnotify-move {
+    transition: opacity 0.4s linear, left 0.5s ease, top 0.5s ease,
+        right 0.5s ease, bottom 0.5s ease;
+}
+.ui-pnotify.ui-pnotify-fade-fast {
+    transition: opacity 0.2s linear;
+    opacity: 0;
+}
+.ui-pnotify.ui-pnotify-fade-fast.ui-pnotify.ui-pnotify-move {
+    transition: opacity 0.2s linear, left 0.5s ease, top 0.5s ease,
+        right 0.5s ease, bottom 0.5s ease;
+}
+.ui-pnotify.ui-pnotify-fade-in {
+    opacity: 1;
+}
+.ui-pnotify-container {
+    padding: 1rem 1.25rem;
+    height: 100%;
+    position: relative;
+    left: 0;
+    margin: 0;
+    border-radius: 0.25rem;
+}
+.ui-pnotify-container::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.ui-pnotify-container.ui-pnotify-sharp {
+    border-radius: 0;
+}
+.ui-pnotify-title {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0.3125rem;
+    font-size: 1rem;
+    color: #e9f5fe;
+}
+.ui-pnotify-text {
+    display: block;
+}
+.ui-pnotify-icon {
+    display: block;
+    float: left;
+    line-height: 1;
+}
+.ui-pnotify-icon > [class^="icon-"] {
+    margin-top: 0.375rem;
+    margin-right: 0.625rem;
+}
+.ui-pnotify-closer,
+.ui-pnotify-sticker {
+    float: right;
+    margin-left: 0.625rem;
+    margin-top: 0.375rem;
+    line-height: 1;
+    outline: 0;
+}
+.ui-pnotify-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.35);
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+body > .ui-pnotify-modal-overlay {
+    position: fixed;
+    z-index: 1040;
+}
+.brighttheme {
+    border: 1px solid;
+}
+.ui-pnotify[class*="bg-"] > .brighttheme {
+    background-color: inherit;
+    border-color: inherit;
+    color: inherit;
+}
+.brighttheme-notice {
+    background-color: #fef3ed;
+    border-color: #f58646;
+    color: #301110;
+}
+.brighttheme-info {
+    background-color: #e9f5fe;
+    border-color: #2196f3;
+    color: #071e31;
+}
+.brighttheme-success {
+    background-color: #e9f7f1;
+    border-color: #25b372;
+    color: #072417;
+}
+.brighttheme-error {
+    background-color: #fdeeee;
+    border-color: #ef5350;
+    color: #301110;
+}
+.brighttheme-icon-closer,
+.brighttheme-icon-sticker {
+    position: relative;
+    display: inline-block;
+    outline: 0;
+    width: 0.8125rem;
+    height: 0.8125rem;
+}
+.brighttheme-icon-closer:after,
+.brighttheme-icon-sticker:after {
+    content: "";
+    font-family: icomoon;
+    font-size: 0.8125rem;
+    display: block;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.brighttheme-icon-closer:after {
+    content: "";
+}
+.brighttheme-icon-sticker:after {
+    content: "";
+}
+.brighttheme-icon-sticker.brighttheme-icon-stuck:after {
+    content: "";
+}
+.ui-pnotify[class*="alert-styled-"] {
+    border-width: 0;
+    padding: 0;
+}
+.ui-pnotify.alert-styled-left .brighttheme {
+    border-left-width: 3rem;
+}
+.ui-pnotify.alert-styled-left:after {
+    left: 0;
+}
+.ui-pnotify.alert-styled-right .brighttheme {
+    border-right-width: 3rem;
+}
+.ui-pnotify.alert-styled-right:after {
+    right: 0;
+}
+.brighttheme .ui-pnotify-action-bar input,
+.brighttheme .ui-pnotify-action-bar textarea {
+    display: block;
+    width: 100%;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    margin-bottom: 1.25rem !important;
+    color: #333;
+    padding: 0.4375rem 0.875rem;
+    outline: 0;
+    border-radius: 0.25rem;
+}
+.ui-pnotify[class*="bg-"] .brighttheme .ui-pnotify-action-bar input,
+.ui-pnotify[class*="bg-"] .brighttheme .ui-pnotify-action-bar textarea {
+    border-color: transparent;
+    color: #fff;
+}
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    input::-webkit-input-placeholder,
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    textarea::-webkit-input-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    input::-moz-placeholder,
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    textarea::-moz-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    input:-ms-input-placeholder,
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    textarea:-ms-input-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    input::-ms-input-placeholder,
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    textarea::-ms-input-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    input::placeholder,
+.ui-pnotify[class*="bg-"]
+    .brighttheme
+    .ui-pnotify-action-bar
+    textarea::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.ui-pnotify-history-container {
+    position: absolute;
+    top: 0;
+    right: 1.25rem;
+    border-top: none;
+    padding: 0;
+    z-index: 1070;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.ui-pnotify-history-container.ui-pnotify-history-fixed {
+    position: fixed;
+}
+.ui-pnotify-history-container .ui-pnotify-history-header {
+    text-align: center;
+    margin-bottom: 0.3125rem;
+}
+.ui-pnotify-history-container button {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+.ui-pnotify-history-container .ui-pnotify-history-pulldown {
+    display: block;
+    margin: 0 auto;
+}
