@@ -7,5 +7,5 @@
 @elseif($match->status == 3)
 <span class="badge live-watch">Second Half </span>
 @else
-<span class="badge bg-danger">Match End </span>
+<span class="badge bg-success">Completed </span>
 @endif

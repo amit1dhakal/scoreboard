@@ -16,7 +16,8 @@ class CreateLeaguesTable extends Migration
         Schema::create('leagues', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('duration');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->integer('status')->default(0); // 1 for start 2 for end
             $table->timestamps();
         });

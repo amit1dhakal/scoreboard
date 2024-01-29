@@ -72,7 +72,9 @@
                             <tr>
                                 <th>S.N.</th>
                                 <th>Name</th>
-                                <th>Jersey No</th>
+                                <th>Team</th>
+                                <th>Goal</th>
+                                <th>Foul</th>
                                 <th width="250">Action</th>
                             </tr>
                         </thead>
@@ -80,8 +82,10 @@
                             @foreach ($players as $player)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $player->name }}</td>
-                                    <td>{{ $player->jersey_no }}</td>
+                                    <td>{{ $player->name }} ({{ $player->jersey_no }})</td>
+                                    <td>{{ $player->team[0]->name??"" }}</td>
+                                    <td>{{ $player->goal_count }}</td>
+                                    <td>{{ $player->foul_count }}</td>
 
                                     <td class="d-flex gap-1">
                                         @if (@Helper::league()->status == 0)
@@ -97,7 +101,7 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <span class="badge bg-secondary"> League is started </span>
+                                            <span class="badge bg-secondary"> {{Helper::leagueStatus()}} </span>
                                         @endif
                                     </td>
                                 </tr>
@@ -110,4 +114,15 @@
             </div>
         </div>
     </main>
+@endsection
+
+@section('custom-script')
+@if (Session::has('errors'))
+<script>
+    $(document).ready(function(){
+        $('#staticBackdrop').modal('show');
+});
+    
+</script>
+@endif
 @endsection

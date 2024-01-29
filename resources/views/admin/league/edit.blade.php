@@ -29,11 +29,21 @@
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label class="form-label" for="duration">Duration <code>*</code></label>
-                                    <input type="text" class="form-control" name="duration" id="duration" required
-                                        value="{{ old('duration') ?? $league->duration }}">
-                                    @if ($errors->has('duration'))
-                                        <span class="text-danger">{{ $errors->first('duration') }}</span>
+                                    <label class="form-label" for="start_date">Start Date <code>*</code></label>
+                                    <input type="date" class="form-control" name="start_date" id="start_date" required
+                                        value="{{ old('start_date') ?? $league->start_date }}">
+                                    @if ($errors->has('start_date'))
+                                        <span class="text-danger">{{ $errors->first('start_date') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="end_date">End Date <code>*</code></label>
+                                    <input type="date" min="" class="form-control" name="end_date" id="end_date" required
+                                        value="{{ old('end_date') ?? $league->end_date }}">
+                                    @if ($errors->has('end_date'))
+                                        <span class="text-danger">{{ $errors->first('end_date') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -42,10 +52,8 @@
                                     <label class="form-label" for="status">Status <code>*</code></label>
                                     <select class="form-control" required name="status" id="status">
                                         <option value="0" @if ($league->status == 0) selected @endif> Coming </option>
-                                        <option value="1" @if ($league->status == 1) selected @endif> Start
-                                        </option>
-                                        <option value="2" @if ($league->status == 2) selected @endif> End
-                                        </option>
+                                        <option value="1" @if ($league->status == 1) selected @endif> Start  </option>
+                                      @if($league->end_date <= date('Y-m-d'))  <option value="2" @if ($league->status == 2) selected @endif> End  </option> @endif
 
                                     </select>
                                     @if ($errors->has('status'))

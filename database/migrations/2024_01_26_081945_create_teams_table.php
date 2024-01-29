@@ -16,8 +16,6 @@ class CreateTeamsTable extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->json('player_ids');
-            $table->enum('field_site',['','Home','Away'])->default('');
             $table->timestamps();
         });
     }

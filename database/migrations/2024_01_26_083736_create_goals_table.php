@@ -20,7 +20,9 @@ class CreateGoalsTable extends Migration
             $table->bigInteger('player_id');
             $table->enum('field_site',['Home','Away'])->default('Home');
             $table->enum('type',['Goal','Foul'])->default('Goal'); 
+            $table->enum('match_duration',['First Half','Second Half'])->default('First Half'); 
             $table->text('remarks')->nullable();
+            $table->integer('event_time')->default(0);
             $table->timestamps();
         });
     }

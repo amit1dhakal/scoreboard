@@ -37,7 +37,8 @@
                                         @foreach($players as $player)
                                         <div class="col-lg-4 col-md-6 col-sm-12">
                                             <input type="checkbox" name="player_ids[]" value="{{$player->id}}"
-                                            @if(in_array($player->id,$team->player_ids)) checked @endif> {{$player->name}} ({{$player->jersey_no}})
+                                            @if(in_array($player->id, $selectedplayers->toArray())) checked @endif
+                                            > {{$player->name}} ({{$player->jersey_no}})
                                         </div>
                                         @endforeach
                                      </div>

@@ -4,9 +4,9 @@
     <main class="loginpage">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-lg-4 col-sm-12">
                     <div class="card">
-                        <div class="card-header loginheader">{{ __('Login into the Dashboard') }}</div>
+                        <div class="card-header loginheader">{{ __('Login into Admin Page') }}</div>
 
                         <div class="card-body">
                             <form method="POST" action="{{ route('login') }}">

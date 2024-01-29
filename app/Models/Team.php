@@ -9,13 +9,9 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $casts = [
-        'player_ids' => 'array',
-    ];
-
-    public function players($id)
+    public function player()
     {
-        return Player::whereIn('id', $id)->get();
+        return $this->belongsToMany(Player::class,'team_players');
     }
     
     public function goal(){

@@ -10,8 +10,15 @@
                         </div>
                         <div class="col-md-4 col-sm-12">
                             @include('admin.include.matchstatus')
+                            <span class="badge bg-secondary"> Match Date :
+                                {{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }} </span>
+                            @if (in_array($match->status, [1, 2, 3]))
+                                <span class="badge bg-secondary"> Match Time : {{ Helper::timeCorrection($match->time) }}
+                                </span>
+                            @endif
                         </div>
-                        @if (@Helper::league()->status == 1)
+
+                        @if (@Helper::league()->status == 1 && $match->date == date('Y-m-d'))
                             <div class="col-md-4 col-sm-12 text-right">
                                 @if ($match->status < 4)
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -27,6 +34,8 @@
                                         @endif
                                     </button>
                                 @endif
+
+
                             </div>
 
                             <div class="modal fade" id="matchStart" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -48,12 +57,12 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <form action="{{ route('match.statuschange', $match->slug) }}" method="post"
-                                            @if ($match->status == 0) onsubmit="return checkFieldSide()" @endif>
+                                        <form action="{{ route('match.statuschange', $match->slug) }}" method="post">
                                             @csrf
                                             <div class="modal-body">
                                                 @if ($match->status == 0)
-                                                    <div class="row">
+                                                    <p>Let's Start The Match </p>
+                                                    {{-- <div class="row">
                                                         @foreach ($match->teams($match->team_ids) as $teamstatuschange)
                                                             <input type="hidden" name="team_ids[]"
                                                                 value="{{ $teamstatuschange->id }}">
@@ -76,26 +85,28 @@
                                                                 </div>
                                                             </div>
                                                         @endforeach
-                                                    </div>
+                                                    </div> --}}
                                                 @elseif($match->status == 1)
                                                     <p>Break time start now </p>
                                                 @elseif($match->status == 2)
                                                     <p>Second haif start now </p>
                                                 @elseif($match->status == 3)
-                                                <div class="col-md-12 col-sm-12">
-                                                    <div class="form-group">
-                                                        <label class="form-label"
-                                                            for="name">Who Win the Match
-                                                            <code>*</code></label>
-                                                        <select type="text" class="form-control" name="winner_team_id" required>
-                                                            <option value="">  ---select the team -- </option>
-                                                            @foreach ($match->teams($match->team_ids) as $winteam)
-                                                            <option value="{{$winteam->id}}"> {{$winteam->name}}</option>
-                                                            @endforeach
-                                                        </select>
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="name">Who Win the Match
+                                                                <code>*</code></label>
+                                                            <select type="text" class="form-control"
+                                                                name="winner_team_id" required>
+                                                                <option value=""> ---select the team -- </option>
+                                                                <option value="{{ $match->hometeam->id }}">
+                                                                    {{ $match->hometeam->name }}</option>
+                                                                <option value="{{ $match->awayteam->id }}">
+                                                                    {{ $match->awayteam->name }}</option>
 
+                                                            </select>
+
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 @endif
 
                                             </div>
@@ -114,130 +125,309 @@
 
                 <div class="card-body">
                     <div class="row">
-                        @foreach ($match->teams($match->team_ids) as $team)
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6>{{ $team->name }} ({{ $team->field_site ?? 'Home' }})</h6>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>{{ $match->hometeam->name }}</h6>
 
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-responsive">
-                                            <thead>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th> S.N. </th>
+                                                <th> Name </th>
+                                                <th> Goals </th>
+                                                <th> Fouls </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach ($match->hometeam->player as $homewayplayer)
                                                 <tr>
-                                                    <th> S.N. </th>
-                                                    <th> Name </th>
-                                                    <th> Goals </th>
-                                                    <th> Fouls </th>
+                                                    <td> {{ $loop->iteration }} </td>
+                                                    <td> {{ $homewayplayer->name }} ({{ $homewayplayer->jersey_no }}) </td>
+                                                    <td> {{ $match->goal->where('player_id', $homewayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                    <td> {{ $match->foul->where('player_id', $homewayplayer->id)->count() ?? 0 }}
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php
-                                                    $total_goal = 0;
-                                                    $total_foul = 0;
-                                                @endphp
-                                                @foreach ($team->players($team->player_ids) as $player)
-                                                    @php
-                                                        $goal = $player->goal($match->id)->count();
-                                                        $foul = $player->foul($match->id)->count();
-                                                        $total_goal = $total_goal + $goal;
-                                                        $total_foul = $total_foul + $foul;
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
 
-                                                    @endphp
-                                                    <tr>
-                                                        <td> {{ $loop->iteration }} </td>
-                                                        <td> {{ $player->name }} ({{ $player->jersey_no }}) </td>
-                                                        <td> {{ $goal }} </td>
-                                                        <td> {{ $foul }} </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
+                                                <th colspan="2" class="text-right">Total : </th>
+                                                <th> {{ $match->goal->where('team_id', $match->hometeam->id)->count() ?? 0 }}
+                                                </th>
+                                                <th> {{ $match->foul->where('team_id', $match->hometeam->id)->count() ?? 0 }}
+                                                </th>
 
-                                                    <th colspan="2" class="text-right">Total : </th>
-                                                    <th> {{ $total_goal }} </th>
-                                                    <th> {{ $total_foul }} </th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    @if (in_array($match->status, [1, 3]))
-                                        <div class="card-footer">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12">
-                                                    <form method="post" action="{{ route('goal.store') }}">
-                                                        @csrf
-                                                        <input type="hidden" name="match_id" value="{{ $match->id }}">
-                                                        <input type="hidden" name="team_id" value="{{ $team->id }}">
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <div class="form-group">
-                                                                    <select class="form-control" name="player_id" required>
-                                                                        <option value="">--- Select Player ---
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                @if (in_array($match->status, [1, 3]))
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12">
+                                                <form method="post" action="{{ route('goal.store') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="match_id" value="{{ $match->id }}">
+                                                    <input type="hidden" name="team_id"
+                                                        value="{{ $match->hometeam->id }}">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <div class="form-group">
+                                                                <select class="form-control" name="player_id" required>
+                                                                    <option value="">--- Select Player ---
+                                                                    </option>
+                                                                    @foreach ($match->hometeam->player as $homeplayersel)
+                                                                        <option value="{{ $homeplayersel->id }}">
+                                                                            {{ $homeplayersel->name }}
+                                                                            ({{ $homeplayersel->jersey_no }})
                                                                         </option>
-                                                                        @foreach ($team->players($team->player_ids) as $playersel)
-                                                                            <option value="{{ $playersel->id }}">
-                                                                                {{ $playersel->name }}
-                                                                                ({{ $playersel->jersey_no }})
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <div class="form-group">
-                                                                    <select class="form-control" name="type" required>
-                                                                        <option value="">--- Select Type --- </option>
-                                                                        <option value="Goal">Goal </option>
-                                                                        <option value="Foul">Foul </option>
-
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-2">
-                                                                <div class="form-group">
-                                                                    <button type="submit" class="btn btn-sm btn-primary"><i
-                                                                            class="fa-solid fa-paper-plane"></i></button>
-                                                                </div>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                </div>
+                                                        <div class="col-4">
+                                                            <div class="form-group">
+                                                                <select class="form-control" name="type" required>
+                                                                    <option value="">--- Select Type --- </option>
+                                                                    <option value="Goal">Goal </option>
+                                                                    <option value="Foul">Foul </option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="form-group">
+                                                                <button type="submit" class="btn btn-sm btn-primary"><i
+                                                                        class="fa-solid fa-paper-plane"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
-                                    @endif
-                                </div>
+                                    </div>
+                                @endif
                             </div>
-                        @endforeach
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>{{ $match->awayteam->name }}</h6>
+
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th> S.N. </th>
+                                                <th> Name </th>
+                                                <th> Goals </th>
+                                                <th> Fouls </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach ($match->awayteam->player as $awaywayplayer)
+                                                <tr>
+                                                    <td> {{ $loop->iteration }} </td>
+                                                    <td> {{ $awaywayplayer->name }} ({{ $awaywayplayer->jersey_no }})
+                                                    </td>
+                                                    <td> {{ $match->goal->where('player_id', $awaywayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                    <td> {{ $match->foul->where('player_id', $awaywayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+
+                                                <th colspan="2" class="text-right">Total : </th>
+                                                <th> {{ $match->goal->where('team_id', $match->awayteam->id)->count() ?? 0 }}
+                                                </th>
+                                                <th> {{ $match->foul->where('team_id', $match->awayteam->id)->count() ?? 0 }}
+                                                </th>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                @if (in_array($match->status, [1, 3]))
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12">
+                                                <form method="post" action="{{ route('goal.store') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="match_id" value="{{ $match->id }}">
+                                                    <input type="hidden" name="team_id"
+                                                        value="{{ $match->awayteam->id }}">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <div class="form-group">
+                                                                <select class="form-control" name="player_id" required>
+                                                                    <option value="">--- Select Player ---
+                                                                    </option>
+                                                                    @foreach ($match->awayteam->player as $awayplayersel)
+                                                                        <option value="{{ $awayplayersel->id }}">
+                                                                            {{ $awayplayersel->name }}
+                                                                            ({{ $awayplayersel->jersey_no }})
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="form-group">
+                                                                <select class="form-control" name="type" required>
+                                                                    <option value="">--- Select Type --- </option>
+                                                                    <option value="Goal">Goal </option>
+                                                                    <option value="Foul">Foul </option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="form-group">
+                                                                <button type="submit" class="btn btn-sm btn-primary"><i
+                                                                        class="fa-solid fa-paper-plane"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
 
                     </div>
                 </div>
-                 
-                @if($match->status ==4)
-                <div class="card-footer">
-                    Winner : {{$match->winnterteam->name??""}}
-                </div>
+
+                @if ($match->status == 4)
+                    <div class="card-footer">
+                        Winner : {{ $match->winnerteam->name ?? '' }}
+                    </div>
                 @endif
 
             </div>
-        </div>
+            <br />
+            <div class="card">
+                <div class="card-header">
+                    <h6>Last Five Events </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>S.N.</th>
+                                {{-- <th>Even Time</th> --}}
+                                <th>Team Name</th>
+                                <th>Player Name</th>
+                                <th>Goal/Foul</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <body>
+                            @foreach ($match->allgoalfoul->take(5) as $goalfoul)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    {{-- <td>{{ $goalfoul->event_time }}</td> --}}
+                                    <td>{{ $goalfoul->team->name ?? '' }}</td>
+                                    <td>{{ $goalfoul->player->name ?? '' }} ({{ $goalfoul->player->jersey_no ?? '' }})
+                                    </td>
+                                    <td>{{ $goalfoul->type }}</td>
+                                    <td>
+                                        @if (in_array($match->status, [1, 2, 3]) && $loop->iteration == 1)
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#goalEdit1"><i class="fas fa-edit"></i> Edit </button>
+
+                                            <div class="modal fade" id="goalEdit1" data-bs-backdrop="static"
+                                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="matchStartLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-md">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="matchStartLabel">
+                                                                Edit last Event
+                                                            </h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="{{ route('goal.update') }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="goal_id"
+                                                                value="{{ $goalfoul->id }}">
+                                                            <div class="modal-body">
+
+                                                                <div class="col-md-12 col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label" for="type"> Type
+                                                                            <code>*</code></label>
+                                                                        <select type="text" class="form-control"
+                                                                            name="type" required>
+                                                                            <option value=""> ---select Type --
+                                                                            </option>
+                                                                            <option value="Goal"
+                                                                                @if ($goalfoul->type == 'Goal') selected @endif>
+                                                                                Goal </option>
+                                                                            <option value="Foul"
+                                                                                @if ($goalfoul->type == 'Foul') selected @endif>
+                                                                                Foul</option>
+                                                                        </select>
+
+                                                                    </div>
+                                                                </div>
+                                                                @php
+                                                                    $forgoalupdate = $goalfoul->team_id == $match->home_team_id ? $match->hometeam->player : $match->awayteam->player;
+                                                                @endphp
+                                                                <div class="col-md-12 col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label" for="type"> Player
+                                                                            <code>*</code></label>
+                                                                        <select type="text" class="form-control"
+                                                                            name="player_id" required>
+                                                                            <option value=""> ---select Player --
+                                                                            </option>
+                                                                            @foreach ($forgoalupdate as $goalupdatep)
+                                                                                <option value="{{ $goalupdatep->id }}"
+                                                                                    @if ($goalupdatep->id == $goalfoul->player_id) selected @endif>
+                                                                                    {{ $goalupdatep->name }}
+                                                                                    ({{ $goalupdatep->jersey_no }})
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-primary"> Done <i
+                                                                        class="fa-solid fa-paper-plane"></i></button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </body>
+                    </table>
+                </div>
+            </div>
     </main>
+
 @endsection
 
 @section('custom-script')
-    <script>
-        function checkFieldSide() {
-            var val1 = $('#field_side_1').val();
-            var val2 = $('#field_side_2').val();
-
-            if (val1 == val2) {
-                alert('You are selected the same field for both team')
-                return false;
-            } else {
-                return true;
-            }
-
-        }
-    </script>
 @endsection

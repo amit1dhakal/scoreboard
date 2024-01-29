@@ -41,11 +41,7 @@ a:hover {
     display: flex;
     align-items: center;
     text-align: center;
-
 }
-
-
-
 
 nav {
     font-size: 1rem;
@@ -68,12 +64,12 @@ main {
     margin-block: 20px;
 }
 
-.loginpage{
-  margin-block: auto;
+.loginpage {
+    margin-block: auto;
 }
-.loginheader{
-  text-align: center;
-  font-weight: 600;
+.loginheader {
+    text-align: center;
+    font-weight: 600;
 }
 
 .paginate_button {
@@ -90,14 +86,14 @@ main {
     -o-border-radius: 2px;
 }
 label {
-    margin-top:10px;
+    margin-top: 10px;
 }
 
-.active{
+.active {
     color: rgb(137, 230, 165) !important;
 }
 
-.live-watch{
+.live-watch {
     animation: liveanimation 1s ease infinite;
     -webkit-animation: liveanimation 1s ease infinite;
 }
@@ -113,6 +109,44 @@ label {
     }
 }
 
+.scoreboardheader {
+    font-size: 25px;
+    font-weight: 700;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+}
+.scoreboard {
+    text-align: center;
+    background-color: var(--background-color);
+    color: white;
+}
+.display-time {
+    font-size: 30px;
+    font-weight: 700;
+}
+.display-team h6{
+    padding-top: 20px;
+    font-size: 20px;
+}
+.team-name {
+    font-weight: 700;
+    font-size: 25px;
+    text-decoration: underline;
+}
+
+
+.team-score {
+    font-weight: 700;
+    font-size: 35px;
+}
+
+.displayMatchFooter{
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+}
+
 .footer {
     background-color: var(--background-color);
     color: var(--white-color);
@@ -121,8 +155,6 @@ label {
     width: 100%;
     margin-top: auto;
 }
-
-
 
 .ui-pnotify {
     top: 1.25rem;

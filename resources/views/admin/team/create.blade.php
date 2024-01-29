@@ -6,7 +6,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6>Team Edit</h6>
+                            <h6>Team Add</h6>
                         </div>
 
                     </div>

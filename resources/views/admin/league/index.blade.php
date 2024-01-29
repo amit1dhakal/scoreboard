@@ -25,7 +25,8 @@
                             <tr>
                                 <th>S.N.</th>
                                 <th>Name</th>
-                                <th>Duration</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
                                 <th>Status</th>
                                 <th width="250">Action</th>
                             </tr>
@@ -35,7 +36,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $league->name }}</td>
-                                    <td>{{ $league->duration }}</td>
+                                    <td>{{ $league->start_date }}</td>
+                                    <td>{{ $league->end_date }}</td>
                                     <td>
                                         @if ($league->status == 1)
                                             <span class="badge bg-primary">Running</span>
@@ -90,11 +92,25 @@
                                             </div>
                                             <div class="col-md-6 col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-label" for="duration">Duration <code>*</code></label>
-                                                    <input type="text" class="form-control" name="duration"
-                                                        id="duration" required value="{{ old('duration') }}">
-                                                    @if ($errors->has('duration'))
-                                                        <span class="text-danger">{{ $errors->first('duration') }}</span>
+                                                    <label class="form-label" for="start_date">Start Date
+                                                        <code>*</code></label>
+                                                    <input type="date" min="{{ date('Y-m-d') }}" class="form-control"
+                                                        name="start_date" id="start_date" required
+                                                        value="{{ old('start_date') }}">
+                                                    @if ($errors->has('start_date'))
+                                                        <span class="text-danger">{{ $errors->first('start_date') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="end_date">End Date
+                                                        <code>*</code></label>
+                                                    <input type="date" min="{{ date('Y-m-d') }}" class="form-control"
+                                                        name="end_date" id="end_date" required
+                                                        value="{{ old('end_date') }}">
+                                                    @if ($errors->has('end_date'))
+                                                        <span class="text-danger">{{ $errors->first('end_date') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -103,7 +119,7 @@
                                                     <label class="form-label" for="status">Status <code>*</code></label>
                                                     <select class="form-control" required name="status" id="status">
                                                         <option value="0"> Coming </option>
-                                                        <option value="1"> Start </option>
+                                                        {{-- <option value="1"> Start </option> --}}
 
                                                     </select>
                                                     @if ($errors->has('status'))
@@ -130,4 +146,13 @@
             </div>
         </div>
     </main>
+@endsection
+@section('custom-script')
+    @if (Session::has('errors'))
+        <script>
+            $(document).ready(function() {
+                $('#staticBackdrop').modal('show');
+            });
+        </script>
+    @endif
 @endsection

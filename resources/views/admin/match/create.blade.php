@@ -11,12 +11,12 @@
 
                     </div>
                 </div>
-                <form action="{{ route('match.store') }}" method="post">
+                <form action="{{ route('match.store') }}" method="post" onsubmit="return checkFieldSide()">
                     @csrf
                     <div class="card-body">
 
                         <div class="row">
-                            <div class="col-md-12 col-sm-12">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label class="form-label" for="name">Name <code>*</code></label>
                                     <input type="text" class="form-control" name="name" id="name" required
@@ -28,32 +28,45 @@
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label class="form-label" for="team1_id">Team 1 <code>*</code></label>
-                                    <select  class="form-control" name="team1_id" id="team1_id" required > 
-                                       @foreach($teams as $team)
-                                       <option value="{{$team->id}}" @if(old('team1_id')==$team->id) selected @endif>{{$team->name}}</option>
-                                       @endforeach
-                                    </select>
-                                    @if ($errors->has('team1_id'))
-                                        <span class="text-danger">{{ $errors->first('team1_id') }}</span>
+                                    <label class="form-label" for="date">Date <code>*</code></label>
+                                    <input type="date" min="{{@Helper::league()->start_date}}"  max="{{@Helper::league()->end_date}}" class="form-control" name="date" id="date" required
+                                        value="{{ old('date') }}">
+                                    @if ($errors->has('date'))
+                                        <span class="text-danger">{{ $errors->first('date') }}</span>
                                     @endif
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label class="form-label" for="team2_id">Team 2 <code>*</code></label>
-                                    <select  class="form-control" name="team2_id" id="team2_id" required
-                                       > 
-                                       @foreach($teams as $team)
-                                       <option value="{{$team->id}}" @if(old('team2_id')==$team->id) selected @endif>{{$team->name}}</option>
-                                       @endforeach
+                                    <label class="form-label" for="home_team_id">Home Team <code>*</code></label>
+                                    <select class="form-control" name="home_team_id" id="home_team_id" required>
+                                        @foreach ($teams as $team)
+                                            <option value="{{ $team->id }}"
+                                                @if (old('home_team_id') == $team->id) selected @endif>{{ $team->name }}
+                                            </option>
+                                        @endforeach
                                     </select>
-                                    @if ($errors->has('team2_id'))
-                                        <span class="text-danger">{{ $errors->first('team2_id') }}</span>
+                                    @if ($errors->has('home_team_id'))
+                                        <span class="text-danger">{{ $errors->first('home_team_id') }}</span>
                                     @endif
                                 </div>
                             </div>
-                           
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="away_team_id">Away Team<code>*</code></label>
+                                    <select class="form-control" name="away_team_id" id="away_team_id" required>
+                                        @foreach ($teams as $team)
+                                            <option value="{{ $team->id }}"
+                                                @if (old('away_team_id') == $team->id) selected @endif>{{ $team->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('away_team_id'))
+                                        <span class="text-danger">{{ $errors->first('away_team_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
 
 
                         </div>
@@ -67,4 +80,20 @@
             </div>
         </div>
     </main>
+@endsection
+@section('custom-script')
+    <script>
+        function checkFieldSide() {
+            var val1 = $('#home_team_id').val();
+            var val2 = $('#away_team_id').val();
+
+            if (val1 == val2) {
+                alert('Home Team and Away Team is same');
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+    </script>
 @endsection

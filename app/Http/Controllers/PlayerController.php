@@ -15,7 +15,7 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        $players = Player::latest()->get();
+        $players = Player::with('team:id,name')->withCount('goal')->withCount('foul')->latest()->get();
         return view('admin.player.index', compact("players"));
     }
 
@@ -39,7 +39,7 @@ class PlayerController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'jersey_no' => 'required|unique:players',
+            'jersey_no' => 'required|numeric| min:1|unique:players',
         ]);
         $player = new Player();
         $player->name = $request->name;
@@ -85,7 +85,7 @@ class PlayerController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'jersey_no' => 'required|unique:players,jersey_no,' . $player->id,
+            'jersey_no' => 'required|numeric|min:1|unique:players,jersey_no,' . $player->id,
         ]);
         $player->name = $request->name;
         $player->jersey_no = $request->jersey_no;

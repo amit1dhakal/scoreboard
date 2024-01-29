@@ -16,4 +16,9 @@ class Player extends Model
     {
         return $this->hasMany(Goal::class, 'player_id', 'id')->where('type', 'Foul');
     }
+
+    public function team()
+    {
+        return $this->belongsToMany(Team::class,'team_players');
+    }
 }

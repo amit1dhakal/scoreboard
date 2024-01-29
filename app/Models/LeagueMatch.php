@@ -10,15 +10,17 @@ class LeagueMatch extends Model
     use HasFactory;
 
     protected $table = 'matches';
-    protected $casts = [
-        'team_ids' => 'array',
-    ];
+   
 
-    public function teams($id)
+    public function hometeam()
     {
-        return Team::whereIn('id', $id)->get();
+        return $this->belongsTo(Team::class, 'home_team_id', 'id');
     }
-    public function winnterteam()
+    public function awayteam()
+    {
+        return $this->belongsTo(Team::class, 'away_team_id', 'id');
+    }
+    public function winnerteam()
     {
         return $this->belongsTo(Team::class, 'winner_team_id', 'id');
     }
@@ -26,20 +28,17 @@ class LeagueMatch extends Model
     {
         return $this->belongsTo(Team::class, 'loser_team_id', 'id');
     }
-    public function goal($match = 0)
+    
+    public function goal()
     {
-        if ($match == 0) {
-            return $this->hasMany(Goal::class, 'match_id', 'id')->where('type', 'Goal');
-        } else {
-            return $this->hasMany(Goal::class, 'match_id', 'id')->where('match_id', $match)->where('type', 'Goal');
-        }
+        return $this->hasMany(Goal::class, 'match_id', 'id')->where('type', 'Goal');
     }
-    public function foul($match = 0)
+    public function foul()
     {
-        if ($match == 0) {
-            return $this->hasMany(Goal::class, 'match_id', 'id')->where('type', 'Foul');
-        } else {
-            return $this->hasMany(Goal::class, 'match_id', 'id')->where('match_id', $match)->where('type', 'Foul');
-        }
+        return $this->hasMany(Goal::class, 'match_id', 'id')->where('type', 'Foul');
+    }
+    public function allgoalfoul()
+    {
+        return $this->hasMany(Goal::class, 'match_id', 'id')->latest();
     }
 }

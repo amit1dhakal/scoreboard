@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Player;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+       $withgoals = Player::with(['team:id,name'])->withCount('goal')
+                ->orderBy('goal_count', 'desc')
+                ->limit(5)->get();
+       $withfouls = Player::with('team:id,name')->withCount('foul')
+                ->orderBy('foul_count', 'desc')
+                ->limit(5)->get();
+        return view('admin.index',compact("withgoals","withfouls"));
     }
 }

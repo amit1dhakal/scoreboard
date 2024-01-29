@@ -41,11 +41,13 @@ class LeagueController extends Controller
         }
         $request->validate([
             'name' => 'required',
-            'duration' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => ['required', 'date', 'after:start_date'],
         ]);
         $league = new League();
         $league->name = $request->name;
-        $league->duration = $request->duration;
+        $league->start_date = $request->start_date;
+        $league->end_date = $request->end_date;
         $league->status = $request->status ?? 0;
         $league->save();
         return redirect()->route('league.index')->with('message', 'League is added successfully');
@@ -84,11 +86,13 @@ class LeagueController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'duration' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => ['required', 'date', 'after:start_date'],
         ]);
 
         $league->name = $request->name;
-        $league->duration = $request->duration;
+        $league->start_date = $request->start_date;
+        $league->end_date = $request->end_date;
         $league->status = $request->status ?? 0;
         $league->update();
         return redirect()->route('league.index')->with('message', 'League is updated successfully');

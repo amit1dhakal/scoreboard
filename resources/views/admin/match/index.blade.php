@@ -24,7 +24,9 @@
                             <tr>
                                 <th>S.N.</th>
                                 <th>Name</th>
-                                <th>Teams</th>
+                                <th>Home Team</th>
+                                <th>Away Team</th>
+                                <th>Date</th>
                                 <th>Status</th>
                                 <th width="250">Action</th>
                             </tr>
@@ -34,13 +36,10 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $match->name }}</td>
-                                    <td>
-                                        @foreach ($match->teams($match->team_ids) as $team)
-                                            {{ $team->name }} @if ($loop->iteration == 1)
-                                                ,
-                                            @endif
-                                        @endforeach
-                                    </td>
+                                    <td>{{ $match->hometeam->name??"" }}</td>
+                                    <td>{{ $match->awayteam->name??"" }}</td>
+                                    <td>{{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }}</td>
+                                    
 
                                     <td>
                                         @include('admin.include.matchstatus')
