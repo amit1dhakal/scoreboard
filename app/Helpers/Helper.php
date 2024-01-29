@@ -20,7 +20,7 @@ class Helper
         if (strlen($time) < 2) {
             $time = '0' . $time;
         }
-        return $ntime = $time . ':00';
+        return  $time . ' : 00';
     }
 
     static function scoreboardupdate($match)
@@ -35,7 +35,7 @@ class Helper
                 'awayScore' => $match->goal->where('team_id', $match->away_team_id)->count() ?? 0,
                 'homeFoul' => $match->foul->where('team_id', $match->home_team_id)->count() ?? 0,
                 'awayFoul' => $match->foul->where('team_id', $match->away_team_id)->count() ?? 0,
-                'lastEvent' => $lastevent? 'Last '. $lastevent->type.' by '. $lastevent->player->name .' ( '. $lastevent->player->jersey_no. ' ) - '. $lastevent->team->name : 0,
+                'lastEvent' => $lastevent? 'Last '. $lastevent->type.' by '. $lastevent->player->name .' ( '. $lastevent->player->jersey_no. ' ) at '.$lastevent->event_time.' minutes for '. $lastevent->team->name : 0,
             ]);
             event(new ScoreboardUpdate($scoreboard));
         } catch (\Exception $e) {

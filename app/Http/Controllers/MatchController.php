@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Models\Goal;
 use App\Models\LeagueMatch;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MatchController extends Controller
@@ -38,7 +39,11 @@ class MatchController extends Controller
             if (count($teams) < 2) {
                 return redirect()->route('team.index')->withErrors('At least 2 teams are required');
             }
-            return view('admin.match.create', compact("teams"));
+            $users = User::where('role', 'Referee')->latest()->get(['id', 'name', 'email']);
+            if (empty($users)) {
+                return redirect()->back()->withErrors('Referee is not added');
+            }
+            return view('admin.match.create', compact("teams", "users"));
         }
     }
 
@@ -54,6 +59,7 @@ class MatchController extends Controller
         $request->validate([
             'home_team_id' => 'required',
             'away_team_id' => 'required',
+            'user_id' => 'required',
             'name' => 'required',
             'date' => 'required|date',
         ]);
@@ -63,6 +69,9 @@ class MatchController extends Controller
         if (LeagueMatch::where('home_team_id', $request->home_team_id)->where('away_team_id', $request->away_team_id)->exists()) {
             return redirect()->back()->withInput()->withErrors('This team combination match already exit');
         }
+        if (LeagueMatch::where('date', $request->date)->where('user_id', $request->user_id)->exists()) {
+            return redirect()->back()->withInput()->withErrors('Referee is in another match at ' . $request->date);
+        }
 
 
         //   return [$request->team1_id, $request->team2_id];
@@ -70,6 +79,7 @@ class MatchController extends Controller
         $match->name = $request->name;
         $match->home_team_id = $request->home_team_id;
         $match->away_team_id = $request->away_team_id;
+        $match->user_id = $request->user_id;
         $match->date = $request->date;
         $match->slug = Helper::randomText();
         $match->save();
@@ -84,7 +94,7 @@ class MatchController extends Controller
      */
     public function show($slug)
     {
-        $match = LeagueMatch::with(['hometeam', 'awayteam', 'winnerteam', 'goal', 'foul'])->where('slug', $slug)->firstOrFail();
+        $match = LeagueMatch::with(['hometeam', 'referee', 'awayteam', 'winnerteam', 'goal', 'foul'])->where('slug', $slug)->firstOrFail();
         return view('admin.match.show', compact("match"));
     }
 
@@ -106,7 +116,11 @@ class MatchController extends Controller
             if (count($teams) < 2) {
                 return redirect()->route('team.index')->withErrors('At least 2 teams are required');
             }
-            return view('admin.match.edit', compact("teams", "match"));
+            $users = User::where('role', 'Referee')->latest()->get(['id', 'name', 'email']);
+            if (empty($users)) {
+                return redirect()->back()->withErrors('Referee is not added');
+            }
+            return view('admin.match.edit', compact("teams", "match", "users"));
         }
     }
 
@@ -122,6 +136,7 @@ class MatchController extends Controller
         $request->validate([
             'home_team_id' => 'required',
             'away_team_id' => 'required',
+            'user_id' => 'required',
             'name' => 'required',
             'date' => 'required',
         ]);
@@ -132,12 +147,16 @@ class MatchController extends Controller
         if (LeagueMatch::where('id', '!=', $match->id)->where('home_team_id', $request->home_team_id)->where('away_team_id', $request->away_team_id)->exists()) {
             return redirect()->back()->withInput()->withErrors('This team combination match already exit');
         }
+        if (LeagueMatch::where('id', '!=', $match->id)->where('date', $request->date)->where('user_id', $request->user_id)->exists()) {
+            return redirect()->back()->withInput()->withErrors('Referee is in another match at ' . $request->date);
+        }
 
         //   return [$request->team1_id, $request->team2_id];
 
         $match->name = $request->name;
         $match->home_team_id = $request->home_team_id;
         $match->away_team_id = $request->away_team_id;
+        $match->user_id = $request->user_id;
         $match->date = $request->date;
         $match->update();
         return redirect()->route('match.index')->with('message', 'Match updated successfully');

@@ -5,28 +5,32 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-4 col-sm-12">
+                        <div class="col-md-3 col-sm-12">
                             <h6>Match Details</h6>
                         </div>
-                        <div class="col-md-4 col-sm-12">
-                            @include('admin.include.matchstatus')
+                        <div class="col-md-7 col-sm-12">
+                            <span class="badge bg-warning"> Referee: {{ $match->referee->name ?? '' }}
+                            </span>
+
                             <span class="badge bg-secondary"> Match Date :
                                 {{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }} </span>
+                            @include('admin.include.matchstatus')
                             @if (in_array($match->status, [1, 2, 3]))
-                                <span class="badge bg-secondary"> Match Time : {{ Helper::timeCorrection($match->time) }}
+                                <span class="badge bg-secondary"> Match Time :
+                                    <span id="adminDisplayTime_{{$match->slug}}"> {{ Helper::timeCorrection($match->time) }} </span>
                                 </span>
                             @endif
                         </div>
 
                         @if (@Helper::league()->status == 1 && $match->date == date('Y-m-d'))
-                            <div class="col-md-4 col-sm-12 text-right">
+                            <div class="col-md-2 col-sm-12 text-right">
                                 @if ($match->status < 4)
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#matchStart">
                                         @if ($match->status == 0)
                                             Start
                                         @elseif($match->status == 1)
-                                            Break
+                                            Break Time
                                         @elseif($match->status == 2)
                                             Second Half Start
                                         @else
@@ -47,7 +51,7 @@
                                                 @if ($match->status == 0)
                                                     Start the Match
                                                 @elseif($match->status == 1)
-                                                    Break
+                                                Break Time
                                                 @elseif($match->status == 2)
                                                     Second Half Start
                                                 @else
@@ -146,7 +150,8 @@
                                             @foreach ($match->hometeam->player as $homewayplayer)
                                                 <tr>
                                                     <td> {{ $loop->iteration }} </td>
-                                                    <td> {{ $homewayplayer->name }} ({{ $homewayplayer->jersey_no }}) </td>
+                                                    <td> {{ $homewayplayer->name }} ({{ $homewayplayer->jersey_no }})
+                                                    </td>
                                                     <td> {{ $match->goal->where('player_id', $homewayplayer->id)->count() ?? 0 }}
                                                     </td>
                                                     <td> {{ $match->foul->where('player_id', $homewayplayer->id)->count() ?? 0 }}
@@ -191,7 +196,7 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-4">
+                                                        <div class="col-6">
                                                             <div class="form-group">
                                                                 <select class="form-control" name="type" required>
                                                                     <option value="">--- Select Type --- </option>
@@ -201,7 +206,13 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2">
+                                                        <div class="col-10 mt-2">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Remarks..." name="remarks">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2 mt-2">
                                                             <div class="form-group">
                                                                 <button type="submit" class="btn btn-sm btn-primary"><i
                                                                         class="fa-solid fa-paper-plane"></i></button>
@@ -282,7 +293,7 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-4">
+                                                        <div class="col-6">
                                                             <div class="form-group">
                                                                 <select class="form-control" name="type" required>
                                                                     <option value="">--- Select Type --- </option>
@@ -292,7 +303,13 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2">
+                                                        <div class="col-10 mt-2">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Remarks..." name="remarks">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2 mt-2">
                                                             <div class="form-group">
                                                                 <button type="submit" class="btn btn-sm btn-primary"><i
                                                                         class="fa-solid fa-paper-plane"></i></button>
@@ -327,10 +344,10 @@
                         <thead>
                             <tr>
                                 <th>S.N.</th>
-                                {{-- <th>Even Time</th> --}}
                                 <th>Team Name</th>
                                 <th>Player Name</th>
                                 <th>Goal/Foul</th>
+                                <th>Event Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -339,11 +356,11 @@
                             @foreach ($match->allgoalfoul->take(5) as $goalfoul)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    {{-- <td>{{ $goalfoul->event_time }}</td> --}}
                                     <td>{{ $goalfoul->team->name ?? '' }}</td>
                                     <td>{{ $goalfoul->player->name ?? '' }} ({{ $goalfoul->player->jersey_no ?? '' }})
                                     </td>
-                                    <td>{{ $goalfoul->type }}</td>
+                                    <td>{{ $goalfoul->type }} @if($goalfoul->remarks) ({{$goalfoul->remarks}}) @endif </td>
+                                    <td>in {{ $goalfoul->event_time }} Minute</td>
                                     <td>
                                         @if (in_array($match->status, [1, 2, 3]) && $loop->iteration == 1)
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -405,6 +422,14 @@
                                                                             @endforeach
                                                                         </select>
 
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12 col-sm-12">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label"> Remarks </label>
+                                                                        <input type="text" name="reamrks"
+                                                                            class="form-control" placeholder="Remarks...."
+                                                                            value="{{ $goalfoul->remarks }}">
                                                                     </div>
                                                                 </div>
 

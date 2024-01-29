@@ -41,4 +41,8 @@ class LeagueMatch extends Model
     {
         return $this->hasMany(Goal::class, 'match_id', 'id')->latest();
     }
+    public function referee()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

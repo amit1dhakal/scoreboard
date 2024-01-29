@@ -68,6 +68,23 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="user_id">Referee<code>*</code></label>
+                                    <select class="form-control" name="user_id" id="user_id" required>
+                                        <option value="">--- select referee --- </option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}"
+                                                @if ($match->user_id == $user->id) selected @endif>{{ $user->name }} ({{ $user->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('user_id'))
+                                        <span class="text-danger">{{ $errors->first('user_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
 
 
                         </div>

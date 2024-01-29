@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Helper;
 use App\Models\LeagueMatch;
 use Illuminate\Console\Command;
 
@@ -34,10 +35,11 @@ class UpdateTime extends Command
      */
     public function handle()
     {
-       $matches  = LeagueMatch::whereIn('status',[1,3])->get();
-       foreach($matches as $matchup){
-        $matchup->time  = $matchup->time + 1;
-        $matchup->update();
-       }
+        $matches  = LeagueMatch::whereIn('status', [1, 3])->get();
+        foreach ($matches as $matchup) {
+            $matchup->time  = $matchup->time + 1;
+            $matchup->update();
+            Helper::scoreboardupdate($matchup);
+        }
     }
 }

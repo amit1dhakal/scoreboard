@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ClientController::class,'index'])->name('client.index');
 Route::get('/match/{slug}', [ClientController::class,'show'])->name('client.show');
 
-Auth::routes(['register' => false, 'password.request' => false, 'password.reset' => false]);
+Auth::routes(['register' => false]);
 
 Route::prefix('admin')->middleware(['auth','logincontrol'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class ClientController extends Controller
 {
     public function index(){
-       $matches = LeagueMatch::with(['hometeam','awayteam','winnerteam'])->latest()->orderby('status','asc')->get();
+       $matches = LeagueMatch::with(['hometeam','awayteam','winnerteam','referee'])->latest()->orderby('status','asc')->get();
        return view('client.index',compact("matches"));
     }
     public function show($slug){

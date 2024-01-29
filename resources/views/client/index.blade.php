@@ -20,9 +20,10 @@
                                 <th>Home Team</th>
                                 <th>Away Team</th>
                                 <th>Winner Team</th>
+                                <th>Referee</th>
                                 <th>Date</th>
                                 <th>Status</th>
-                                <th width="250">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +34,7 @@
                                     <td>{{ $match->hometeam->name ?? '' }}</td>
                                     <td>{{ $match->awayteam->name ?? '' }}</td>
                                     <td>{{ $match->winnerteam->name ?? '' }}</td>
+                                    <td>{{ $match->referee->name ?? '' }}</td>
                                     <td>{{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }}</td>
                                     <td>@include('admin.include.matchstatus')</td>
                                     <td>

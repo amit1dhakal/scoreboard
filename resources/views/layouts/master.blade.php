@@ -3,10 +3,14 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="description" content="Live Football Score Board">
+    <meta name="keywords" content="Football, Scoreboard, Live">
+    <meta name="author" content="Amit Dhakal">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title> @yield('title') @isset($title)
             {{ $title }} |
         @endisset Score Board</title>
+
     <link rel="icon" href="{{ asset('fab-icon.png') }}" type="image/png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
@@ -84,7 +88,7 @@
                                         href="{{ route('home') }}">Dashboard </a>
                                     @can('Admin')
                                         <a class="dropdown-item {{ request()->routeIs('user.*') ? 'active' : '' }}"
-                                            href="{{ route('user.index') }}">Users </a>
+                                            href="{{ route('user.index') }}">Users / Referees </a>
                                     @endcan
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
@@ -152,6 +156,68 @@
         new DataTable("#example");
     </script>
     @yield('custom-script')
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+
+    <script>
+        //  function copyStartDate(){
+        //     $('#homeScoreDisplay').html('23');
+        //         $('#awayScoreDisplay').html('34');
+        //     }
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('39402eab979ec3288429', {
+            cluster: 'mt1'
+        });
+
+        var channel = pusher.subscribe('score-board-update');
+        channel.bind('scoreboardupdate-event', function(data) {
+            // console.log(data.data)
+            if (document.getElementById('adminDisplayTime_' + data.data.slug)) {
+                document.getElementById('adminDisplayTime_' + data.data.slug).innerHTML = data.data.matchTime;
+            }
+            if (document.getElementById('homeScoreDisplay_' + data.data.slug)) {
+                document.getElementById('homeScoreDisplay_' + data.data.slug).innerHTML = data.data.homeScore;
+            }
+            if (document.getElementById('awayScoreDisplay_' + data.data.slug)) {
+                document.getElementById('awayScoreDisplay_' + data.data.slug).innerHTML = data.data.awayScore;
+            }
+            if (document.getElementById('homeFoulDisplay_' + data.data.slug)) {
+                document.getElementById('homeFoulDisplay_' + data.data.slug).innerHTML = data.data.homeFoul;
+            }
+            if (document.getElementById('awayFoulDisplay_' + data.data.slug)) {
+                document.getElementById('awayFoulDisplay_' + data.data.slug).innerHTML = data.data.awayFoul;
+            }
+            if (document.getElementById('timeDisplay_' + data.data.slug)) {
+                document.getElementById('timeDisplay_' + data.data.slug).innerHTML = data.data.matchTime;
+            }
+
+
+            var html = '';
+            if (data.data.matchStatus === 0) {
+                var html = '<span class="badge bg-primary">Match is not Started </span>';
+            } else if (data.data.matchStatus === 1) {
+                var html = '<span class="badge live-watch">First Half </span>';
+            } else if (data.data.matchStatus === 2) {
+                var html = '<span class="badge bg-warning">Break Time </span>';
+            } else if (data.data.matchStatus === 3) {
+                var html = '<span class="badge live-watch">Second Half </span>';
+            } else if (data.data.matchStatus === 4) {
+                var html = '<span class="badge bg-success">Completed </span>';
+            }
+
+            if (document.getElementById('matchStatusUpdate_' + data.data.slug)) {
+                document.getElementById('matchStatusUpdate_' + data.data.slug).innerHTML = html;
+            }
+
+            if (data.data.lastEvent != 0) {
+                if (document.getElementById('lastEventDisplay_' + data.data.slug)) {
+                    document.getElementById('lastEventDisplay_' + data.data.slug).innerHTML = data.data.lastEvent;
+                }
+            }
+        });
+    </script>
 
 </body>
 

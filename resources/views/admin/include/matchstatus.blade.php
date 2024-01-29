@@ -1,5 +1,5 @@
 @if ($match->status == 0)
-<span class="badge bg-primary">Match is not Started </span>
+<span class="badge bg-primary">Not Started Yet </span>
 @elseif($match->status == 1)
 <span class="badge live-watch">First Half </span>
 @elseif($match->status == 2)

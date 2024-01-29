@@ -27,6 +27,7 @@ class GoalController extends Controller
         $goal->match_duration = $match->status == 1 ? 'First Half' : 'Second Half';
         $goal->field_site = $match->home_team_id == $request->team_id ? 'Home' : 'Away';
         $goal->event_time = $match->time;
+        $goal->remarks = $request->remarks;
         $goal->save();
         Helper::scoreboardupdate($match);
         return redirect()->route('match.show', $match->slug)->with('message', $request->type . ' Add successfully');
@@ -44,6 +45,7 @@ class GoalController extends Controller
 
         $goal->player_id = $request->player_id;
         $goal->type = $request->type;
+        $goal->remarks = $request->remarks;
         $goal->update();
         Helper::scoreboardupdate($goal->match);
         return redirect()->route('match.show', $goal->match->slug)->with('message', $request->type . ' Update successfully');
