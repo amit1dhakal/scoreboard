@@ -36,5 +36,6 @@ Route::prefix('admin')->middleware(['auth','logincontrol'])->group(function () {
     Route::resource('/user', UserController::class)->except('show')->middleware('can:Admin');
     Route::post('goal/store', [GoalController::class, 'store'])->name('goal.store')->middleware('can:Admin');
     Route::post('goal/update', [GoalController::class, 'update'])->name('goal.update')->middleware('can:Admin');
+    Route::get('/teams/filter', [HomeController::class, 'teamfilter'])->name('teamfilter');
     Route::post('/match/statuschange/{slug}', [MatchController::class,'statuschange'])->name('match.statuschange')->middleware('can:Admin');
 });
