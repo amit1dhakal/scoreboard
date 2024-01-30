@@ -20,7 +20,7 @@ class Helper
         if (strlen($time) < 2) {
             $time = '0' . $time;
         }
-        return  $time . ' : 00';
+        return  $time . '\'';
     }
 
     static function scoreboardupdate($match)
