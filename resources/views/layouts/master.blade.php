@@ -125,7 +125,9 @@
     @endif
 
     <footer class="footer">
-        <p>@ {{ date('Y') }} Designed by <a href="https://amitdhakal.com.np/" target="_blank">Amit Dhakal</a></p>
+        <p>@ {{ date('Y') }} Developed by <a href="https://amitdhakal.com.np/" target="_blank">Amit Dhakal</a> with
+            <i class="fas fa-heart text-danger"></i> <a href="https://infodev.com.np/"
+                target="_blank">infoDevelopers</a></p>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
@@ -166,7 +168,7 @@
         //         $('#awayScoreDisplay').html('34');
         //     }
         Pusher.logToConsole = true;
-
+        
         var pusher = new Pusher('39402eab979ec3288429', {
             cluster: 'mt1'
         });

@@ -8,6 +8,7 @@ use App\Models\LeagueMatch;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MatchController extends Controller
 {
@@ -30,21 +31,23 @@ class MatchController extends Controller
      */
     public function create()
     {
-        if (@Helper::league()->status != 0) {
-            return redirect()->route('league.index')->withErrors('League is not created or already started');
-        } else {
-
-            $teams = Team::latest()->get();
-
-            if (count($teams) < 2) {
-                return redirect()->route('team.index')->withErrors('At least 2 teams are required');
-            }
-            $users = User::where('role', 'Referee')->latest()->get(['id', 'name', 'email']);
-            if (empty($users)) {
-                return redirect()->back()->withErrors('Referee is not added');
-            }
-            return view('admin.match.create', compact("teams", "users"));
+        if (empty(Helper::league())) {
+            return redirect()->route('match.index')->withErrors('League is not created');
         }
+        if (@Helper::league()->status != 0) {
+            return redirect()->route('match.index')->withErrors('League is already Running');
+        }
+
+        $teams = Team::latest()->get();
+
+        if (count($teams) < 2) {
+            return redirect()->route('team.index')->withErrors('At least 2 teams are required');
+        }
+        $users = User::where('role', 'Referee')->latest()->get(['id', 'name', 'email']);
+        if (empty($users)) {
+            return redirect()->back()->withErrors('Referee is not added');
+        }
+        return view('admin.match.create', compact("teams", "users"));
     }
 
     /**
@@ -63,6 +66,10 @@ class MatchController extends Controller
             'name' => 'required',
             'date' => 'required|date',
         ]);
+        $league = Helper::league();
+        if (($request->date < $league->start_date) && ($request->date > $league->end_date)) {
+            return redirect()->back()->withInput()->withErrors('Date must be in league duration');
+        }
         if ($request->home_team_id == $request->away_team_id) {
             return redirect()->back()->withInput()->withErrors('Home Team and Away Team must not be same');
         }
@@ -81,7 +88,7 @@ class MatchController extends Controller
         $match->away_team_id = $request->away_team_id;
         $match->user_id = $request->user_id;
         $match->date = $request->date;
-        $match->slug = Helper::randomText();
+        $match->slug = Str::slug($request->name).'-'.Helper::randomText();
         $match->save();
         return redirect()->route('match.index')->with('message', 'Match created successfully');
     }
@@ -107,8 +114,8 @@ class MatchController extends Controller
     public function edit($slug)
     {
         $match = LeagueMatch::where('status', 0)->where('slug', $slug)->firstOrFail();
-        if (@Helper::league()->status != 0) {
-            return redirect()->route('league.index')->withErrors('League is not added or already started');
+        if (Helper::league()->status != 0) {
+            return redirect()->route('league.index')->withErrors('League already started');
         } else {
 
             $teams = Team::latest()->get();
@@ -141,6 +148,12 @@ class MatchController extends Controller
             'date' => 'required',
         ]);
         $match =  LeagueMatch::where('status', 0)->where('slug', $slug)->firstOrFail();
+
+        $league = Helper::league();
+        if (($request->date < $league->start_date) && ($request->date > $league->end_date)) {
+            return redirect()->back()->withInput()->withErrors('Date must be in league duration');
+        }
+
         if ($request->home_team_id == $request->away_team_id) {
             return redirect()->back()->withInput()->withErrors('Home Team and Away Team must not be same');
         }

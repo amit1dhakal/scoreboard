@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ClientController::class,'index'])->name('client.index');
 Route::get('/match/{slug}', [ClientController::class,'show'])->name('client.show');
+Route::get('/live/{slug}', [ClientController::class,'live'])->name('client.live');
 
 Auth::routes(['register' => false]);
 

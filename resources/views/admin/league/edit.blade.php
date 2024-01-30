@@ -51,7 +51,7 @@
                                 <div class="form-group">
                                     <label class="form-label" for="status">Status <code>*</code></label>
                                     <select class="form-control" required name="status" id="status">
-                                        <option value="0" @if ($league->status == 0) selected @endif> Coming </option>
+                                        @if($league->start_date <= date('Y-m-d'))   <option value="0" @if ($league->status == 0) selected @endif> Coming </option> @endif
                                         <option value="1" @if ($league->status == 1) selected @endif> Start  </option>
                                       @if($league->end_date <= date('Y-m-d'))  <option value="2" @if ($league->status == 2) selected @endif> End  </option> @endif
 

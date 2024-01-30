@@ -6,20 +6,22 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-3 col-sm-12">
-                            <h6>Match Details</h6>
+                            <h5>Match Details</h5>
                         </div>
-                        <div class="col-md-7 col-sm-12">
+                        <div class="col-md-7 col-sm-12" style="justify-content:space-between;">
                             <span class="badge bg-warning"> Referee: {{ $match->referee->name ?? '' }}
                             </span>
 
                             <span class="badge bg-secondary"> Match Date :
                                 {{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }} </span>
-                            @include('admin.include.matchstatus')
+
                             @if (in_array($match->status, [1, 2, 3]))
-                                <span class="badge bg-secondary"> Match Time :
-                                    <span id="adminDisplayTime_{{$match->slug}}"> {{ Helper::timeCorrection($match->time) }} </span>
+                                <span class="badge bg-info"> Match Time :
+                                    <span id="adminDisplayTime_{{ $match->slug }}">
+                                        {{ Helper::timeCorrection($match->time) }} </span>
                                 </span>
                             @endif
+                            @include('admin.include.matchstatus')
                         </div>
 
                         @if (@Helper::league()->status == 1 && $match->date == date('Y-m-d'))
@@ -41,7 +43,7 @@
 
 
                             </div>
-
+                            {{-- match status update section --}}
                             <div class="modal fade" id="matchStart" data-bs-backdrop="static" data-bs-keyboard="false"
                                 tabindex="-1" aria-labelledby="matchStartLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-md">
@@ -51,7 +53,7 @@
                                                 @if ($match->status == 0)
                                                     Start the Match
                                                 @elseif($match->status == 1)
-                                                Break Time
+                                                    Break Time
                                                 @elseif($match->status == 2)
                                                     Second Half Start
                                                 @else
@@ -93,7 +95,7 @@
                                                 @elseif($match->status == 1)
                                                     <p>Break time start now </p>
                                                 @elseif($match->status == 2)
-                                                    <p>Second haif start now </p>
+                                                    <p>Second half start now </p>
                                                 @elseif($match->status == 3)
                                                     <div class="col-md-12 col-sm-12">
                                                         <div class="form-group">
@@ -122,13 +124,22 @@
                                     </div>
                                 </div>
                             </div>
+                            {{-- match status update section  end --}}
+                        @else
+                         @if(@Helper::league()->status == 0 )
+                            <div class="col-md-2 col-sm-12">
+                                <p class="text-danger">League is not Started</p>
+                            </div>
+                            @endif
                         @endif
+
 
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="row">
+                        {{-- home team section start --}}
                         <div class="col-md-6 col-sm-12">
                             <div class="card">
                                 <div class="card-header">
@@ -172,6 +183,7 @@
                                         </tfoot>
                                     </table>
                                 </div>
+                                {{-- goal or foul update section start for home team --}}
                                 @if (in_array($match->status, [1, 3]))
                                     <div class="card-footer">
                                         <div class="row">
@@ -224,8 +236,11 @@
                                         </div>
                                     </div>
                                 @endif
+                                {{-- goal or foul update section end for home team --}}
                             </div>
                         </div>
+                        {{-- home team section end --}}
+                        {{-- away team section start --}}
                         <div class="col-md-6 col-sm-12">
                             <div class="card">
                                 <div class="card-header">
@@ -269,6 +284,7 @@
                                         </tfoot>
                                     </table>
                                 </div>
+                                {{-- goal or foul update section start for away team --}}
                                 @if (in_array($match->status, [1, 3]))
                                     <div class="card-footer">
                                         <div class="row">
@@ -321,8 +337,10 @@
                                         </div>
                                     </div>
                                 @endif
+                                {{-- goal or foul update section end for away team --}}
                             </div>
                         </div>
+                        {{-- away team section end --}}
 
                     </div>
                 </div>
@@ -335,6 +353,7 @@
 
             </div>
             <br />
+            {{-- last 5 svents section --}}
             <div class="card">
                 <div class="card-header">
                     <h6>Last Five Events </h6>
@@ -359,8 +378,11 @@
                                     <td>{{ $goalfoul->team->name ?? '' }}</td>
                                     <td>{{ $goalfoul->player->name ?? '' }} ({{ $goalfoul->player->jersey_no ?? '' }})
                                     </td>
-                                    <td>{{ $goalfoul->type }} @if($goalfoul->remarks) ({{$goalfoul->remarks}}) @endif </td>
-                                    <td>in {{ $goalfoul->event_time }} Minute</td>
+                                    <td>{{ $goalfoul->type }} @if ($goalfoul->remarks)
+                                            ({{ $goalfoul->remarks }})
+                                        @endif
+                                    </td>
+                                    <td>at {{ $goalfoul->event_time }} minutes</td>
                                     <td>
                                         @if (in_array($match->status, [1, 2, 3]) && $loop->iteration == 1)
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -450,6 +472,7 @@
                     </table>
                 </div>
             </div>
+            {{-- last 5 svents section end --}}
     </main>
 
 @endsection

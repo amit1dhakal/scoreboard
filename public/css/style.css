@@ -94,18 +94,32 @@ label {
 }
 
 .live-watch {
-    animation: liveanimation 1s ease infinite;
-    -webkit-animation: liveanimation 1s ease infinite;
+    position: relative;
+    color: black;
+    margin-bottom: 10px;
+    /* background-color: rgb(14, 15, 15); */
+    
+}
+.live-watch::after{
+    content: '';
+    width: 20px;
+    height: 4px;
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    background-color: rgb(11, 182, 5);
+    animation: liveanimation 0.7s alternate-reverse infinite linear;
+    -webkit-animation: liveanimation 0.7s alternate-reverse infinite linear;
 }
 @keyframes liveanimation {
     0% {
-        background-color: green;
+       left: 10px;
     }
     50% {
-        background-color: red;
+        left: 20px;
     }
     100% {
-        background-color: blue;
+        left: 40px;
     }
 }
 

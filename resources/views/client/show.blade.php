@@ -1,70 +1,141 @@
 @extends('layouts.master')
 @section('content')
-    <main class="loginpage">
+    <main>
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-12 col-lg-6 col-sm-12">
-                    <div class="card">
-                        <div class="card-header scoreboardheader">
-                            <div> Score Board </div>
-                            <div id="matchStatusUpdate_{{ $match->slug }}"> @include('admin.include.matchstatus') </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <h6>Match Details</h6>
+                        </div>
+                        <div class="col-md-8 col-sm-12">
+
+                            <span class="badge bg-secondary"> Match Date :
+                                {{ Carbon\Carbon::parse($match->date)->format('M-d, Y') }} </span>
+                            @include('admin.include.matchstatus')
+
                         </div>
 
-                        <div class="card-body scoreboard">
-                            <div class="display-time" id="timeDisplay_{{$match->slug}}">
-                               {{Helper::timeCorrection($match->time)}}
-                            </div>
-                            <hr />
-                            <div class="display-team">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="team-name">{{ $match->hometeam->name ?? '' }}</div>
-                                          <h6>Goals</h6>
-                                        <div class="team-score" id="homeScoreDisplay_{{ $match->slug }}">
-                                            {{ $match->goal->where('team_id', $match->hometeam->id)->count() ?? '' }}</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="team-name">{{ $match->awayteam->name ?? '' }}</div>
-                                        <h6>Goals</h6>
-                                        <div class="team-score" id="awayScoreDisplay_{{ $match->slug }}">
-                                            {{ $match->goal->where('team_id', $match->awayteam->id)->count() ?? '' }}</div>
-                                    </div>
 
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <h6>Fouls</h6>
-                                        <div class="team-score" id="homeFoulDisplay_{{ $match->slug }}">
-                                            {{ $match->foul->where('team_id', $match->hometeam->id)->count() ?? '' }}</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h6>Fouls</h6>
-                                        <div class="team-score" id="awayFoulDisplay_{{ $match->slug }}">
-                                            {{ $match->foul->where('team_id', $match->awayteam->id)->count() ?? '' }}</div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer displayMatchFooter" id="lastEventDisplay_{{$match->slug}}">
-                            <p>@isset($match->allgoalfoul->first()->player)
-                                {{ 'Last '. $match->allgoalfoul->first()->type.' by '. $match->allgoalfoul->first()->player->name}} ({{$match->allgoalfoul->first()->player->jersey_no}}) at {{$match->allgoalfoul->first()->event_time}} minutes for {{$match->allgoalfoul->first()->team->name}}
-                                @endisset 
-                            </p>
-                        </div>
                     </div>
                 </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        {{-- home team --}}
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>{{ $match->hometeam->name }}</h6>
+
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th> S.N. </th>
+                                                <th> Name </th>
+                                                <th> Goals </th>
+                                                <th> Fouls </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach ($match->hometeam->player as $homewayplayer)
+                                                <tr>
+                                                    <td> {{ $loop->iteration }} </td>
+                                                    <td> {{ $homewayplayer->name }} ({{ $homewayplayer->jersey_no }})
+                                                    </td>
+                                                    <td> {{ $match->goal->where('player_id', $homewayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                    <td> {{ $match->foul->where('player_id', $homewayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+
+                                                <th colspan="2" class="text-right">Total : </th>
+                                                <th> {{ $match->goal->where('team_id', $match->hometeam->id)->count() ?? 0 }}
+                                                </th>
+                                                <th> {{ $match->foul->where('team_id', $match->hometeam->id)->count() ?? 0 }}
+                                                </th>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        {{-- home team section end --}}
+                        {{-- away team --}}
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>{{ $match->awayteam->name }}</h6>
+
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th> S.N. </th>
+                                                <th> Name </th>
+                                                <th> Goals </th>
+                                                <th> Fouls </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach ($match->awayteam->player as $awaywayplayer)
+                                                <tr>
+                                                    <td> {{ $loop->iteration }} </td>
+                                                    <td> {{ $awaywayplayer->name }} ({{ $awaywayplayer->jersey_no }})
+                                                    </td>
+                                                    <td> {{ $match->goal->where('player_id', $awaywayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                    <td> {{ $match->foul->where('player_id', $awaywayplayer->id)->count() ?? 0 }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+
+                                                <th colspan="2" class="text-right">Total : </th>
+                                                <th> {{ $match->goal->where('team_id', $match->awayteam->id)->count() ?? 0 }}
+                                                </th>
+                                                <th> {{ $match->foul->where('team_id', $match->awayteam->id)->count() ?? 0 }}
+                                                </th>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        {{-- away team section end --}}
+
+                    </div>
+                </div>
+
+
+                <div class="card-footer d-flex justify-content-between">
+
+                    <div>
+                        @if ($match->status == 4)
+                            Winner : {{ $match->winnerteam->name ?? '' }}
+                        @endif
+                    </div>
+
+                    <div> Game Referee: {{ $match->referee->name ?? '' }} </div>
+                </div>
+
+
             </div>
-        </div>
-        </div>
+
     </main>
-
-    {{-- <button onclick="copyStartDate()">CLick </button> --}}
-@endsection
-
-@section('custom-script')
-    <!-- Laravel Echo -->
-
-    <!-- Pusher -->
-   
 @endsection
